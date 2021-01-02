@@ -9,8 +9,6 @@ const { Vec3 } = require('vec3')
 global.THREE = require('three')
 
 async function main () {
-  const version = '1.16.4'
-
   const viewDistance = 6
 
   const bot = mineflayer.createBot({
@@ -26,6 +24,7 @@ async function main () {
 
   bot.once('spawn', () => {
     console.log('bot spawned - starting viewer')
+    const version = bot.version
 
     const center = bot.entity.position
 
@@ -40,14 +39,13 @@ async function main () {
     // Create viewer
     const viewer = new Viewer(renderer)
     viewer.setVersion(version)
-    // Attach controls to viewer
-    const controls = new MapControls(viewer.camera, renderer.domElement)
 
     worldView.listenToBot(bot)
+    worldView.init(bot.entity.position)
 
     function botPosition () {
+      viewer.setFirstPersonCamera(bot.entity.position, bot.entity.yaw, bot.entity.pitch)
       worldView.updatePosition(bot.entity.position)
-      viewer.camera.position.set(bot.entity.position.x, bot.entity.position.y, bot.entity.position.z)
     }
 
     bot.on('move', botPosition)
@@ -60,14 +58,63 @@ async function main () {
     viewer.listen(worldView)
 
     viewer.camera.position.set(center.x, center.y, center.z)
-    controls.update()
+
+    function moveCallback (e) {
+      bot.entity.pitch -= e.movementY * 0.01
+      bot.entity.yaw -= e.movementX * 0.01
+      viewer.setFirstPersonCamera(bot.entity.position, bot.entity.yaw, bot.entity.pitch)
+    }
+    function changeCallback() {
+      if (document.pointerLockElement === renderer.domElement ||
+        document.mozPointerLockElement === renderer.domElement ||
+        document.webkitPointerLockElement === renderer.domElement) {
+        document.addEventListener("mousemove", moveCallback, false)
+      } else {
+        document.removeEventListener("mousemove", moveCallback, false)
+      }
+    }
+    document.addEventListener('pointerlockchange', changeCallback, false)
+    document.addEventListener('mozpointerlockchange', changeCallback, false)
+    document.addEventListener('webkitpointerlockchange', changeCallback, false)
+    renderer.domElement.requestPointerLock = renderer.domElement.requestPointerLock ||
+      renderer.domElement.mozRequestPointerLock ||
+      renderer.domElement.webkitRequestPointerLock
+    document.addEventListener('mousedown', (e) => {
+      renderer.domElement.requestPointerLock()
+    })
+
+    document.addEventListener('contextmenu', (e) => e.preventDefault(), false)
+    document.addEventListener('keydown', (e) => {
+      console.log (e.code )
+      if (e.code === 'KeyW') {
+        bot.setControlState('forward', true)
+      } else if (e.code === 'KeyS') {
+        bot.setControlState('back', true)
+      } else if (e.code === 'KeyA') {
+        bot.setControlState('right', true)
+      } else if (e.code === 'KeyD') {
+        bot.setControlState('left', true)
+      } else if (e.code === 'Space') {
+        bot.setControlState('jump', true)
+      }
+    }, false)
+    document.addEventListener('keyup', (e) => {
+      if (e.code === 'KeyW') {
+        bot.setControlState('forward', false)
+      } else if (e.code === 'KeyS') {
+        bot.setControlState('back', false)
+      } else if (e.code === 'KeyA') {
+        bot.setControlState('right', false)
+      } else if (e.code === 'KeyD') {
+        bot.setControlState('left', false)
+      } else if (e.code === 'Space') {
+        bot.setControlState('jump', false)
+      }
+    }, false)
 
     // Browser animation loop
     const animate = () => {
       window.requestAnimationFrame(animate)
-      if (controls) controls.update()
-      worldView.updatePosition(controls.target)
-      // worldView.updatePosition(bot.entity.position)
       renderer.render(viewer.scene, viewer.camera)
     }
     animate()
