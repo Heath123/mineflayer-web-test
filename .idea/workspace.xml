@@ -16,7 +16,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/prismarine-viewer" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../prismarine-viewer" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -53,9 +53,9 @@
       <screen x="72" y="28" width="1848" height="1052" />
     </state>
     <state x="779" y="312" width="424" height="491" key="FileChooserDialogImpl/72.28.1848.1052/1920.0.1680.1050@72.28.1848.1052" timestamp="1609535920635" />
-    <state x="294" y="391" width="587" height="546" key="find.popup" timestamp="1609538806870">
+    <state x="294" y="391" width="587" height="546" key="find.popup" timestamp="1609594795459">
       <screen x="72" y="28" width="1848" height="1052" />
     </state>
-    <state x="294" y="391" width="587" height="546" key="find.popup/72.28.1848.1052/1920.0.1680.1050@72.28.1848.1052" timestamp="1609538806869" />
+    <state x="294" y="391" width="587" height="546" key="find.popup/72.28.1848.1052/1920.0.1680.1050@72.28.1848.1052" timestamp="1609594795459" />
   </component>
 </project>

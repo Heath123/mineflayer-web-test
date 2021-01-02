@@ -52,6 +52,10 @@ async function main () {
 
     bot.on('move', botPosition)
 
+    bot.on('chunkColumnLoad', () => {
+      console.log('chunkload')
+    })
+
     // Link WorldView and Viewer
     viewer.listen(worldView)
 
@@ -62,8 +66,8 @@ async function main () {
     const animate = () => {
       window.requestAnimationFrame(animate)
       if (controls) controls.update()
-      // worldView.updatePosition(controls.target)
-      worldView.updatePosition(bot.entity.position)
+      worldView.updatePosition(controls.target)
+      // worldView.updatePosition(bot.entity.position)
       renderer.render(viewer.scene, viewer.camera)
     }
     animate()
