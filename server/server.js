@@ -2,6 +2,7 @@ var express = require("express");
 var netApi = require("net-browserify");
 var bodyParser = require("body-parser");
 var request = require("request");
+compression = require('compression');
 
 // Create our app
 var app = express();
@@ -22,6 +23,7 @@ app.use(function(req, res, next) {
   }
 });
 
+app.use(compression());
 app.use(netApi());
 app.use(express.static("./public"));
 

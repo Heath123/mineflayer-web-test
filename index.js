@@ -8,22 +8,21 @@ const { WorldView, Viewer, MapControls } = require('prismarine-viewer/viewer')
 const { Vec3 } = require('vec3')
 global.THREE = require('three')
 
+const chat = require('./chat')
+
 async function main () {
   const viewDistance = 6
 
   const bot = mineflayer.createBot({
     host: '95.111.249.143',
     port: 10000,
-    username: 'echo',
-  })
-
-  bot.on('chat', (username, message) => {
-    if (username === bot.username) return
-    bot.chat(message)
+    username: prompt('Username'),
   })
 
   bot.once('spawn', () => {
     console.log('bot spawned - starting viewer')
+    chat.init(undefined, bot._client)
+
     const version = bot.version
 
     const center = bot.entity.position

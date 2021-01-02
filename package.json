@@ -14,9 +14,7 @@
         "browserify-zlib": "^0.2.0",
         "buffer": "^6.0.3",
         "constants-browserify": "^1.0.0",
-        "copy-webpack-plugin": "^7.0.0",
         "crypto-browserify": "^3.12.0",
-        "diamond-square": "^1.2.0",
         "events": "^3.2.0",
         "http-browserify": "^1.7.0",
         "https-browserify": "^1.0.0",
@@ -25,7 +23,6 @@
         "net-browserify": "^0.2.4",
         "os-browserify": "^0.3.0",
         "path-browserify": "^1.0.1",
-        "prismarine-schematic": "^1.0.0",
         "prismarine-viewer": "^1.13.0",
         "process": "^0.11.10",
         "stream-browserify": "^3.0.0",
@@ -36,6 +33,7 @@
         "webpack-dev-server": "^3.11.0"
     },
     "devDependencies": {
-        "http-server": "^0.12.3"
+        "http-server": "^0.12.3",
+        "lodash-webpack-plugin": "^0.11.6"
     }
 }

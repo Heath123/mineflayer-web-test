@@ -1,10 +1,11 @@
 const webpack = require('webpack')
 const path = require('path')
-const CopyPlugin = require('copy-webpack-plugin')
+LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 const config = {
-  devtool: 'inline-source-map',
-  mode: 'development',
+  // devtool: 'inline-source-map',
+  // mode: 'development',
+  mode: 'production',
   entry: path.resolve(__dirname, './index.js'),
   output: {
     path: path.resolve(__dirname, './public'),
@@ -50,7 +51,7 @@ const config = {
     new webpack.NormalModuleReplacementPlugin(
       /prismarine-viewer[/|\\]viewer[/|\\]lib[/|\\]utils/,
       './utils.web.js'
-    )/*,
+    ),/*
     new CopyPlugin({
       patterns: [
         { from: '../../public/blocksStates/', to: './blocksStates/' },
@@ -59,6 +60,8 @@ const config = {
         { from: '../../public/supportedVersions.json', to: './' }
       ]
     })*/
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new LodashModuleReplacementPlugin()
   ],
   devServer: {
     contentBase: path.resolve(__dirname, './public'),
