@@ -1,3 +1,5 @@
-public/
-node_modules
+public/index.js
+public/index.js.LICENSE.txt
+node_modules/
 .idea/
+*.DS_Store

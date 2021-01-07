@@ -10,18 +10,20 @@ global.THREE = require('three')
 
 const chat = require('./chat')
 
-async function main () {
-  const viewDistance = 6
+const maxPitch = 0.5 * Math.PI;
+const minPitch = -0.5 * Math.PI;
 
+async function main () {
+  const viewDistance = 4
+    
   const bot = mineflayer.createBot({
-    host: '95.111.249.143',
-    port: 10000,
-    username: prompt('Username'),
+    host: prompt('What server would you like to connect to? Do not include the port.'),
+    port: prompt('What port is this server on? Enter 25565 if you don\'t know.'),
+    username: prompt('What username would you like to connect with?'),
   })
 
   bot.once('spawn', () => {
     console.log('bot spawned - starting viewer')
-    chat.init(undefined, bot._client)
 
     const version = bot.version
 
@@ -29,11 +31,16 @@ async function main () {
 
     const worldView = new WorldView(bot.world, viewDistance, center)
 
+
     // Create three.js context, add to page
     const renderer = new THREE.WebGLRenderer()
+
+
     renderer.setPixelRatio(window.devicePixelRatio || 1)
     renderer.setSize(window.innerWidth, window.innerHeight)
     document.body.appendChild(renderer.domElement)
+
+    chat.init(undefined, bot._client, renderer)
 
     // Create viewer
     const viewer = new Viewer(renderer)
@@ -60,6 +67,7 @@ async function main () {
 
     function moveCallback (e) {
       bot.entity.pitch -= e.movementY * 0.01
+      bot.entity.pitch = Math.max(minPitch, Math.min(maxPitch, bot.entity.pitch));
       bot.entity.yaw -= e.movementX * 0.01
       viewer.setFirstPersonCamera(bot.entity.position, bot.entity.yaw, bot.entity.pitch)
     }
@@ -95,6 +103,10 @@ async function main () {
         bot.setControlState('left', true)
       } else if (e.code === 'Space') {
         bot.setControlState('jump', true)
+      } else if (e.code === 'KeyI') {
+        console.log("DEBUG LOG (request by pressing the I key)");
+        console.log("Current pitch: " + bot.entity.pitch);
+        console.log("Current yaw: " + bot.entity.yaw);
       }
     }, false)
     document.addEventListener('keyup', (e) => {

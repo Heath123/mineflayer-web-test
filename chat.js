@@ -33,12 +33,17 @@ const dictionary = {
   'chat.type.text': '<%s> %s'
 }
 
-export function init(mineweb, client) {
+export function init(mineweb, client, renderer) {
   const chat = document.querySelector('#chat');
+  const chatWrapper = document.querySelector('#chat');
   const chatInput = document.querySelector('#chatinput');
 
   const chatHistory = []
   let chatHistoryPos = 0
+  
+  renderer.domElement.requestPointerLock = renderer.domElement.requestPointerLock ||
+      renderer.domElement.mozRequestPointerLock ||
+      renderer.domElement.webkitRequestPointerLock
 
   // Show chat
   chat.style.display = "block";
@@ -62,12 +67,19 @@ export function init(mineweb, client) {
   // Chat events
   document.onkeypress = function(e) {
     e = e || window.event;
-    if (e.code === "KeyT" && inChat === false) {
-      enableChat();
+    if (inChat === false) {
+      if(e.code === "KeyT") {
+        enableChat(false);
+      }
+
+      if(e.code === "Slash") {
+        enableChat(true);
+      }
       return false;
     }
 
     if (!inChat) return;
+    e.stopPropagation();
     if (e.code === "Enter") {
       chatHistory.push(chatInput.value)
       /* TODO: mineweb._client */ client.write("chat", {
@@ -88,13 +100,20 @@ export function init(mineweb, client) {
       hideChat();
     }
   }); */
-  function enableChat() {
+  function enableChat(isCommand) {
     // Set inChat value
     inChat = true;
     // Exit the pointer lock
     document.exitPointerLock();
     // Show chat input
     chatInput.style.display = "block";
+    // Show extended chat history
+    chat.style.maxHeight = "calc(90px * 8)";
+    chat.scrollTop = chat.scrollHeight; // Stay bottom of the list
+    if(isCommand) { //handle commands
+      chatInput.value = "/"
+    } 
+    // Focus element
     chatInput.focus();
     // Disable controls
     // mineweb._noa.inputs.disabled = true;
@@ -105,6 +124,8 @@ export function init(mineweb, client) {
     inChat = false;
     // Hide chat
     hideChat();
+
+    renderer.domElement.requestPointerLock();
     // Enable controls
     // mineweb._noa.inputs.disabled = false;
     // Focus noa again
@@ -120,6 +141,9 @@ export function init(mineweb, client) {
     chatInput.blur();
     // Hide it
     chatInput.style.display = "none";
+    // Hide extended chat history
+    chat.style.maxHeight = "calc(90px * 4)";
+    chat.scrollTop = chat.scrollHeight; // Stay bottom of the list
   }
 
   function readExtra(extra) {
@@ -199,6 +223,6 @@ export function init(mineweb, client) {
       li.appendChild(span);
     });
     chat.appendChild(li);
-    chat.scrollTop = chat.scrollHeight; // Stay bottem of the list
+    chat.scrollTop = chat.scrollHeight; // Stay bottom of the list
   });
 }
